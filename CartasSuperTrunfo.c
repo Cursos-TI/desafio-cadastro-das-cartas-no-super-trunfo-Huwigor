@@ -1,55 +1,47 @@
+/* Este código funcional contém os 3 desafios, na descrição diz que poderia realizar
+   apenas um dos desafios, mas por precaução, estou enviando as 3 etapas de uma só vez..  */
+
 #include <stdio.h>
-
-// Desafio Super Trunfo - Países
-// Tema 1 - Cadastro das Cartas
-// Este código inicial serve como base para o desenvolvimento do sistema de cadastro de cartas de cidades.
-// Siga os comentários para implementar cada parte do desafio.
-//Teste larissa
-
-
-/* EU UTILIZEI O LOOP FOR PARA EVITAR QUE O CÓDIGO FICASSE MUITO EXTENSO, REPETINDO DIVERSAS 
-   VEZES OS BLOCOS COM PRINTF E SCANF, O LOOP FOR IRÁ SE REPETIR POR 32 VEZES, GARANTINDO O 
-   CADASTRO DAS 32 CARTAS, 4 CARTAS PARA CADA 8 ESTADOS..*/
-
-
-#define TOTAL_CIDADES 32 // Define o número total de cidades.
+#define TOTAL_CIDADES 32
 
 // Estrutura para armazenar os dados de uma cidade.
 typedef struct {
-    char nome[50];          // Nome da cidade.
-    char codigo[4];          // Código da cidade (ex: A01, B02).
-    int populacao;           // População da cidade.
-    float area;              // Área da cidade em km².
-    double pib;              // PIB da cidade em bilhões.
-    int pontos_turisticos;   // Número de pontos turísticos.
+    char estado;
+    char codigo[4];
+    char nome[50];
+    int populacao;
+    float area;
+    double pib;
+    int pontos_turisticos;
+    float densidade_populacional;
+    float pib_per_capita;
+    float super_poder;
 } Cidade;
 
-int main() {
-    // Sugestão: Defina variáveis separadas para cada atributo da cidade.
-    // Exemplos de atributos: código da cidade, nome, população, área, PIB, número de pontos turísticos.
-    
-    // Cadastro das Cartas:
-    // Sugestão: Utilize a função scanf para capturar as entradas do usuário para cada atributo.
-    // Solicite ao usuário que insira as informações de cada cidade, como o código, nome, população, área, etc.
-    
-    // Exibição dos Dados das Cartas:
-    // Sugestão: Utilize a função printf para exibir as informações das cartas cadastradas de forma clara e organizada.
-    // Exiba os valores inseridos para cada atributo da cidade, um por linha.
+// Função para calcular propriedades derivadas
+double calcular_densidade(int populacao, float area) {
+    return area > 0 ? populacao / area : 0;
+}
 
-    
-     Cidade cidades[TOTAL_CIDADES]; // Array para armazenar os dados das cidades.
+double calcular_pib_per_capita(double pib, int populacao) {
+    return populacao > 0 ? pib / populacao : 0;
+}
 
+// Função para cadastrar cidades
+void cadastrar_cidades(Cidade cidades[]) {
     printf("\n--- Cadastro de Cidades ---\n");
-
-    // Loop para cadastrar os dados das cidades.
     for (int i = 0; i < TOTAL_CIDADES; i++) {
         printf("\nDigite os dados da cidade %d:\n", i + 1);
 
-        printf("Nome da cidade: ");
-        scanf(" %[^\n]", cidades[i].nome); // Lê o nome da cidade (incluindo espaços).
+        printf("Estado (A-H): ");
+        scanf(" %c", &cidades[i].estado);
 
         printf("Código da cidade (Ex: A01, B02 até H04): ");
         scanf("%s", cidades[i].codigo);
+
+        printf("Nome da cidade: ");
+        getchar();  // Captura o ENTER anterior
+        scanf(" %[^\n]", cidades[i].nome);
 
         printf("População: ");
         scanf("%d", &cidades[i].populacao);
@@ -62,20 +54,58 @@ int main() {
 
         printf("Número de pontos turísticos: ");
         scanf("%d", &cidades[i].pontos_turisticos);
+
+        cidades[i].densidade_populacional = calcular_densidade(cidades[i].populacao, cidades[i].area);
+        cidades[i].pib_per_capita = calcular_pib_per_capita(cidades[i].pib, cidades[i].populacao);
+        cidades[i].super_poder = cidades[i].populacao + cidades[i].area + cidades[i].pib + cidades[i].pontos_turisticos;
     }
+}
 
+// Função para exibir cidades
+void exibir_cidades(Cidade cidades[]) {
     printf("\n--- Cidades Cadastradas ---\n");
-
-    // Loop para exibir os dados das cidades cadastradas.
     for (int i = 0; i < TOTAL_CIDADES; i++) {
-        printf("\nNome: %s\n", cidades[i].nome);
+        printf("\nEstado: %c\n", cidades[i].estado);
         printf("Código: %s\n", cidades[i].codigo);
+        printf("Nome: %s\n", cidades[i].nome);
         printf("População: %d habitantes\n", cidades[i].populacao);
         printf("Área: %.2f km²\n", cidades[i].area);
         printf("PIB: %.2lf bilhões\n", cidades[i].pib);
         printf("Pontos turísticos: %d\n", cidades[i].pontos_turisticos);
+        printf("Densidade Populacional: %.2f pessoas/km²\n", cidades[i].densidade_populacional);
+        printf("PIB per Capita: %.2f reais\n", cidades[i].pib_per_capita);
+        printf("Super Poder: %.2f\n", cidades[i].super_poder);
     }
+}
 
-    return 0; // Fim do programa.
+// Função para comparar duas cidades
+void comparar_cidades(Cidade cidade1, Cidade cidade2) {
+    printf("\n--- Comparação de Cidades ---\n");
+    printf("Comparando %s (%s) e %s (%s)\n", cidade1.nome, cidade1.codigo, cidade2.nome, cidade2.codigo);
     
+    printf("Densidade Populacional: %s vence!\n", cidade1.densidade_populacional < cidade2.densidade_populacional ? cidade1.nome : cidade2.nome);
+    printf("População: %s vence!\n", cidade1.populacao > cidade2.populacao ? cidade1.nome : cidade2.nome);
+    printf("Área: %s vence!\n", cidade1.area > cidade2.area ? cidade1.nome : cidade2.nome);
+    printf("PIB: %s vence!\n", cidade1.pib > cidade2.pib ? cidade1.nome : cidade2.nome);
+    printf("Pontos turísticos: %s vence!\n", cidade1.pontos_turisticos > cidade2.pontos_turisticos ? cidade1.nome : cidade2.nome);
+    printf("Super Poder: %s vence!\n", cidade1.super_poder > cidade2.super_poder ? cidade1.nome : cidade2.nome);
+}
+
+int main() {
+    Cidade cidades[TOTAL_CIDADES];
+    cadastrar_cidades(cidades);
+    exibir_cidades(cidades);
+    
+    // Exemplo de comparação entre duas cidades
+    int index1, index2;
+    printf("\nEscolha duas cidades para comparar (0 a %d):\n", TOTAL_CIDADES - 1);
+    scanf("%d %d", &index1, &index2);
+    
+    if (index1 >= 0 && index1 < TOTAL_CIDADES && index2 >= 0 && index2 < TOTAL_CIDADES) {
+        comparar_cidades(cidades[index1], cidades[index2]);
+    } else {
+        printf("Índices inválidos!\n");
+    }
+    
+    return 0;
 }
